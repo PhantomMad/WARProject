@@ -36,6 +36,13 @@ pipeline {
                 sh 'echo "yes" | terraform apply'
             }
         }
+        stage('Get IP'){
+            steps{
+              script {
+                env.VMEXTIP = terraform output external_ip_address
+              }
+            }
+        }
         stage('Clear TF'){
           steps {
               sh 'rm -f /var/lib/jenkins/.terraformrc'
