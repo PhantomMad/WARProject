@@ -37,10 +37,10 @@ pipeline {
             }
         }
         stage('Get IP'){
-            steps{
-              script {
-                env.VMEXTIP = terraform output external_ip_address
-              }
+            steps {
+                script {
+                    env.VMEXTIP = sh 'terraform output external_ip_address'
+                }
             }
         }
         stage('Clear TF'){
