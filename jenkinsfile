@@ -33,7 +33,7 @@ pipeline {
         }
         stage('Apply TF'){
             steps {
-                sh 'terraform apply'
+                sh 'echo "yes" | terraform apply'
             }
         }
         stage('Clear TF'){
