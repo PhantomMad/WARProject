@@ -15,6 +15,21 @@ pipeline {
                 sh 'terraform init'
             }
         }
+        stage('Validate TF config'){
+            steps {
+                sh 'terraform validate'
+            }
+        }
+        stage('Format TF config'){
+            steps {
+                sh 'terraform fmt'
+            }
+        }
+        stage('Plan TF'){
+            steps {
+                sh 'terraform plan'
+            }
+        }
         stage('Clear TF'){
           steps {
               sh 'rm -f /var/lib/jenkins/.terraformrc'
