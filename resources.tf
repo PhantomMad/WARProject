@@ -1,5 +1,6 @@
 resource "yandex_compute_instance" "VM" {
   name = "workmashine"
+  hostname = "buildvm"
 
   resources {
     cores  = 4
