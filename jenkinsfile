@@ -20,7 +20,7 @@ pipeline {
               sh 'rm -rf /var/lib/jenkins/.terraform.d '
               sh 'rm -rf /var/lib/jenkins/workspace/WARProject/*'
               sh 'rm -rf /var/lib/jenkins/workspace/WARProject/.*'
-              sh 'rm -rf /var/lib/jenkins/workspace/WARProject@tmp
+              sh 'rm -rf /var/lib/jenkins/workspace/WARProject@tmp'
               sh 'rm -f /var/lib/jenkins/.terraformrc'
           }
         }
