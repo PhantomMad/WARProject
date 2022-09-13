@@ -4,9 +4,10 @@ pipeline {
         terraform 'tf1.2.9'
     }
     stages {
-        stage('GIT') {
+        stage('Copy sec TFiles') {
             steps {
-                sh 'echo TEST'
+                sh 'cp /home/jenkins/main.tf .'
+                sh 'cp /home/jenkins//home/jenkins/.terraformrc .'
             }
         }
     }
