@@ -10,5 +10,10 @@ pipeline {
                 sh 'cp /home/jenkins/.terraformrc .'
             }
         }
+        stage('Init TF provider'){
+            steps {
+                sh 'terraform init'
+            }
+        }
     }
 }
