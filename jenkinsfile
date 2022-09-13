@@ -41,7 +41,6 @@ pipeline {
                 script {
                     vmextip = sh(script:'terraform output external_ip_address', returnStdout:true)
                 }
-                echo "${vmextip}"
             }
         }
         stage('Clear TF'){
