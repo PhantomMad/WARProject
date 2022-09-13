@@ -31,7 +31,11 @@ pipeline {
                 sh 'terraform plan'
             }
         }
-
+        stage('Apply TF'){
+            steps {
+                sh 'terraform apply'
+            }
+        }
         stage('Clear TF'){
           steps {
               sh 'rm -f /var/lib/jenkins/.terraformrc'
