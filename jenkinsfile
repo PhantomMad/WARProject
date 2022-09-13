@@ -38,7 +38,7 @@ pipeline {
         }
         stage('Get IP'){
             steps {
-                def vmextip = sh(script:'terraform output external_ip_address',returnStdout:true)
+                vmextip = sh(script:'terraform output external_ip_address', returnStdout:true)
                 echo "${vmextip}"
             }
         }
