@@ -38,10 +38,8 @@ pipeline {
         }
         stage('Get IP'){
             steps {
-                script {
-                    env.VMEXTIP = `terraform output external_ip_address`
-                }
-                echo "${env.VMEXTIP}"
+                def vmextip = sh(script:'terraform output external_ip_address',returnStdout:true)
+                echo "${vmextip}"
             }
         }
         stage('Clear TF'){
