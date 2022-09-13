@@ -7,7 +7,7 @@ pipeline {
         stage('Copy sec TFiles') {
             steps {
                 sh 'cp /home/jenkins/main.tf .'
-                sh 'cp /home/jenkins/home/jenkins/.terraformrc .'
+                sh 'cp /home/jenkins/.terraformrc .'
             }
         }
     }
