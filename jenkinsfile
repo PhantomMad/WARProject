@@ -39,7 +39,7 @@ pipeline {
         stage('Get IP'){
             steps {
                 script {
-                    env.VMEXTIP = sh 'terraform output external_ip_address'
+                    env.VMEXTIP = `terraform output external_ip_address`
                 }
                 echo "${env.VMEXTIP}"
             }
