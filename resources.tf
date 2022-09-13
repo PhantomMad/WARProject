@@ -19,6 +19,6 @@ resource "yandex_compute_instance" "VM" {
     preemptible = true
   }
   metadata = {
-    user-data = "${file("~workspace/WARProject/users.txt")}"
+    user-data = "${file("~/users.txt")}"
   }
 }
