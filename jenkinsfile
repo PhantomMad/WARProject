@@ -40,8 +40,8 @@ pipeline {
             steps {
                 script {
                     vmextip = sh(script:'terraform output external_ip_address', returnStdout:true)
+                    sh 'echo -e "[WORKER]\n${vmextip}" > ansible/hosts.cfg'
                 }
-                sh 'echo -e "[WORKER]\n${vmextip}" > ansible/hosts.cfg'
             }
         }
 //        stage('Apply paybook'){
