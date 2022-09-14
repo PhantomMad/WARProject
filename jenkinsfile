@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+    tools {
+        terraform 'tf1.2.9'
+    }
+    stages {
+        stage('Copy sec TFiles') {
+            steps {
+                sh 'cp /home/jenkins/users.txt .'
+                sh 'cp /home/jenkins/main.tf .'
+                sh 'cp /home/jenkins/.terraformrc /var/lib/jenkins'
+            }
+        }
+        stage('Init TF provider'){
+            steps {
+                sh 'terraform init'
+            }
+        }
+        stage('Validate TF config'){
+            steps {
+                sh 'terraform validate'
+            }
+        }
+        stage('Format TF config'){
+            steps {
+                sh 'terraform fmt'
+            }
+        }
+        stage('Plan TF'){
+            steps {
+                sh 'terraform plan'
+            }
+        }
+        stage('Apply TF'){
+            steps {
+                sh 'echo "yes" | terraform apply'
+            }
+        }
+        stage('Get IP'){
+            steps {
+                script {
+                    vmextip = sh(script:'terraform output external_ip_address', returnStdout:true)
+                }
+            }
+        }
+        stage('Clear TF'){
+          steps {
+              sh 'rm -f /var/lib/jenkins/.terraformrc'
+              sh 'rm -rf /var/lib/jenkins/.terraform.d '
+              sh 'find /var/lib/jenkins/workspace/WARProject -mindepth 1 -delete'
+          }
+        }
+    }
+}
