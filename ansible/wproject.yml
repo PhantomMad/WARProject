@@ -1,0 +1,7 @@
+---
+- name: "Install build and deploy"
+  hosts: WORKER
+  tasks:
+    - name: "First try"
+      ansible.builtin.ping:
+
