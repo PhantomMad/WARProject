@@ -43,6 +43,7 @@ pipeline {
                     def HCONFIG = "[WORKER]\n" + VMEXTIP
                     writeFile(file: 'ansible/hosts.cfg', text: HCONFIG)
                 }
+                sh 'sed -e \'s/"//\' -e \'s/"$//\' -i ansible/hosts.cfg'
 
             }
         }
