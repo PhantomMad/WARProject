@@ -48,7 +48,11 @@ pipeline {
             }
         }
         stage('Apply paybook'){
-           steps {
+           input {
+		       message "Confirm first node run"
+			   ok "Go!"
+		   }
+		   steps {
               dir("ansible"){
                   ansiblePlaybook (become: true,
                                    colorized: true,
