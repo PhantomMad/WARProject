@@ -2,7 +2,6 @@ pipeline {
     agent any
     tools {
         terraform 'tf1.2.9'
-        org.jenkinsci.plugins.ansible.AnsibleInstallation 'IaC'
     }
     stages {
         stage('Copy sec TFiles') {
