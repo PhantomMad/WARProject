@@ -36,15 +36,11 @@ pipeline {
                 sh 'echo "yes" | terraform apply'
             }
         }
-        stage('Get IP'){
+        stage('GetSet IP '){
             steps {
                 script {
                     vmextip = sh(script:'terraform output external_ip_address', returnStdout:true)
                 }
-            }
-        }
-        stage('Set hosts'){
-            steps {
                 sh 'echo -e "[WORKER]\n${vmextip}" > ansible/hosts.cfg'
             }
         }
