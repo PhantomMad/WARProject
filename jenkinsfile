@@ -49,7 +49,7 @@ pipeline {
         }
         stage('Apply paybook'){
            input {
-		       message "Confirm first node run"
+		       message "Confirm yandex cloud node succefully run"
 			   ok "Go!"
 		   }
 		   steps {
