@@ -55,8 +55,8 @@ pipeline {
                                    credentialsId: 'Jenkins_slaves',
                                    disableHostKeyChecking: true,
                                    installation: 'IaC',
-                                   inventory: 'ansible/hosts.cfg',
-                                   playbook: 'ansible/wproject.yml')
+                                   inventory: 'hosts.cfg',
+                                   playbook: 'wproject.yml')
               }
             }
         }
