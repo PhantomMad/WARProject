@@ -2,6 +2,7 @@ pipeline {
     agent any
     tools {
         terraform 'tf1.2.9'
+        ansible 'IaC'
     }
     stages {
         stage('Copy sec TFiles') {
@@ -31,18 +32,18 @@ pipeline {
                 sh 'terraform plan'
             }
         }
-        stage('Apply TF'){
-            steps {
-                sh 'echo "yes" | terraform apply'
-            }
-        }
-        stage('Get IP'){
-            steps {
-                script {
-                    vmextip = sh(script:'terraform output external_ip_address', returnStdout:true)
-                }
-            }
-        }
+        //stage('Apply TF'){
+            //steps {
+               // sh 'echo "yes" | terraform apply'
+            //}
+        //}
+        //stage('Get IP'){
+            //steps {
+                //script {
+                    //vmextip = sh(script:'terraform output external_ip_address', returnStdout:true)
+                //}
+            //}
+        //}
         stage('Clear TF'){
           steps {
               sh 'rm -f /var/lib/jenkins/.terraformrc'
