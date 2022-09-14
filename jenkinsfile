@@ -41,7 +41,7 @@ pipeline {
                 script {
                     def VMEXTIP = sh(script:'terraform output external_ip_address', returnStdout:true)
                     def HCONFIG = "[WORKER]\n" + VMEXTIP
-                    appendFile(file: 'ansible/hosts.cfg', text: HCONFIG)
+                    writeFile(file: 'ansible/hosts.cfg', text: HCONFIG)
                 }
                 sh 'sed -e \'s/"//\' -e \'s/"$//\' -i ansible/hosts.cfg'
 
