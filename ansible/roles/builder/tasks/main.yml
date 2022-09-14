@@ -1,6 +1,13 @@
 ---
 # tasks file for builder
+- name: "Update cache"
+  ansible.builtin.apt:
+    update_cache: yes
 
+- name: "Ensure install git"
+  ansible.builtin.apt:
+    name: 'git'
+    state: present
 
 - name: Install Java VM
   ansible.builtin.apt:

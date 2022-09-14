@@ -1,16 +1,6 @@
 ---
 - name: "Install build and deploy"
   hosts: WORKER
-  tasks:
-    - name: "Update cache"
-      ansible.builtin.apt:
-        update_cache: yes
-
-    - name: "Ensure install git"
-      ansible.builtin.apt:
-        name: 'git'
-        state: present
-
   roles:
     - builder
 
