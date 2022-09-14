@@ -47,19 +47,19 @@ pipeline {
 
             }
         }
-//        stage('Apply paybook'){
-//           steps {
-//              dir("ansible"){
-//                  ansiblePlaybook (become: true,
-//                                   colorized: true,
-//                                   credentialsId: 'Jenkins_slaves',
-//                                   disableHostKeyChecking: true,
-//                                   installation: 'IaC',
-//                                   inventory: 'ansible/hosts.cfg',
-//                                   playbook: 'ansible/wproject.yml')
-//              }
-//            }
-//        }
+        stage('Apply paybook'){
+           steps {
+              dir("ansible"){
+                  ansiblePlaybook (become: true,
+                                   colorized: true,
+                                   credentialsId: 'Jenkins_slaves',
+                                   disableHostKeyChecking: true,
+                                   installation: 'IaC',
+                                   inventory: 'ansible/hosts.cfg',
+                                   playbook: 'ansible/wproject.yml')
+              }
+            }
+        }
         stage('Clear TF'){
           steps {
               sh 'rm -f /var/lib/jenkins/.terraformrc'
