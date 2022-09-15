@@ -24,4 +24,4 @@ git_maven_target: '{{ git_clone_tmp }}/target'
 
 #Docker path
 docker_folder: '/var/lib/docker/project'
-dfile_path: '/var/lib/jenkins/workspace/WARProject'
+dfile_path: '/var/lib/jenkins/workspace/WARProject/Dockerfile'

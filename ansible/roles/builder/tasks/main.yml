@@ -88,7 +88,8 @@
     state: directory
     mode: '0755'
 
-- name:  "Synchronization Dockerfile using rsync protocol"
-  ansible.posix.synchronize:
-    src: '{{ dfile_path }}/*.*ar'
+- name: "Copy Dockerfile to remote destination"
+  ansible.builtin.copy:
+    src: "{{ dfile_path }}"
     dest: '{{ docker_folder }}'
+
