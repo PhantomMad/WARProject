@@ -1,9 +1,13 @@
 FROM alpine:latest
 RUN apk --no-cache update \
-    && apk --no-cache add openjdk11 bash
+    && apk --no-cache add openjdk11 bash tar
 WORKDIR /opt
 RUN mkdir tomcat/ \
-    && mkdir webapps
+    && mkdir distr/
+COPY apache-tomcat-10.0.23.tar.gz distr/
+RUN tar xpvf distr/apache-tomcat-*.tar.gz -C tomcat/ --strip-components=1 \
+    && rm -f distr/apache-tomcat-*.tar.gz
+ADD webapps distr/
 RUN export JAVA_HOME=$(readlink -f /usr/bin/java | sed 's:/bin/java::')
 ENV JRE_HOME=${JAVA_HOME}
 ENV PATH=$PATH:$JAVA_HOME/bin

@@ -51,6 +51,13 @@
     checksum: "{{ maven_sha }}"
     validate_certs: no
 
+- name: "Download required tomcat"
+  ansible.builtin.get_url:
+    url: "{{ tomcat_link }}"
+    dest: "{{ docker_folder }}"
+    checksum: "{{ tomcat_sha }}"
+    validate_certs: no
+
 - name: "Unpack maven archive"
   ansible.builtin.unarchive:
     src: "{{ maven_archive_distr }}"
@@ -89,6 +96,12 @@
     state: directory
     mode: '0755'
 
+- name: "Create folder for docker tomcat files"
+  ansible.builtin.file:
+    path: '{{ dcr_javaf_tomcat }}'
+    state: directory
+    mode: '0755'
+
 - name: "Copy Dockerfile to remote destination"
   ansible.builtin.copy:
     src: "{{ dfile_path }}"
@@ -104,7 +117,7 @@
 - name: "Copy war|jar files to docker folder"
   ansible.builtin.copy:
     src: '{{ item.path }}'
-    dest: '{{ docker_folder }}'
+    dest: '{{ dcr_javaf_tomcat }}'
     remote_src: yes
   with_items: '{{ build_files.files }}'
 
@@ -119,3 +132,10 @@
     source: pull
     pull:
       platform: 'amd64'
+
+- name: "Build our project image"
+  community.docker.docker_image:
+    name: 'tomcat:local'
+    build:
+      path: '{{ rem_dpath }}'
+    source: build
