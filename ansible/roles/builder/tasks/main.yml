@@ -97,7 +97,7 @@
   ansible.builtin.find:
     path: "{{ git_maven_target }}"
     use_regex: yes
-    patterns: "^.*?\.(?:war|jar)$"
+    patterns: "^.*?\\.(?:war|jar)$"
   register: build_files
 
 - name: "Copy war|jar files to docker folder"
