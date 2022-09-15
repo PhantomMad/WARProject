@@ -142,5 +142,5 @@
   community.docker.docker_image:
     name: 'tomcat:local'
     build:
-      path: '{{ rem_dpath }}'
+      path: '{{ docker_folder }}'
     source: build
