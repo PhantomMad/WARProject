@@ -82,3 +82,13 @@
   args:
     chdir: "{{ git_clone_tmp }}"
 
+- name: "Create folder for docker work images"
+  ansible.builtin.file:
+    path: '{{ docker_folder }}'
+    state: directory
+    mode: '0755'
+
+- name:  "Synchronization Dockerfile using rsync protocol"
+  ansible.posix.synchronize:
+    src: '{{ dfile_path }}/*.*ar'
+    dest: '{{ docker_folder }}'
