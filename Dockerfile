@@ -16,4 +16,4 @@ ENV CATALINA_OPTS="-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
 COPY start.sh .
 EXPOSE 8080
 RUN ["chmod", "+x", "./start.sh"]
-#ENTRYPOINT ["./start.sh"]
+ENTRYPOINT ["./start.sh"]
