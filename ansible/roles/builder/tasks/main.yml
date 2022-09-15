@@ -24,20 +24,13 @@
     name: docker
     state: started
 
-- name: "Set env for maven and community.docker"
+- name: "Set env for maven"
   ansible.builtin.lineinfile:
     path: "/etc/environment"
     state: present
     regexp: "^{{ item.key }}="
     line: "{{ item.key }}={{ item.value }}"
   with_items: "{{ maven_env }}"
-
-- name: "Add docker SDK for python"
-  ansible.builtin.pip:
-     name: docker
-
-- name: "Add community.docker"
-  ansible.builtin.command: 'ansible-galaxy collection install community.docker'
 
 - name: "Create directory for maven"
   ansible.builtin.file:

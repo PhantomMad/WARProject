@@ -7,7 +7,7 @@ maven_env:
       - key: 'MAVEN_HOME'
         value: '/opt/maven'
       - key: 'PATH'
-        value: '"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:${M2_HOME}/bin:/var/lib/jenkins/.local/bin"'
+        value: '"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:${M2_HOME}/bin"'
 
 maven_distr: 'apache-maven-3.8.6-bin.tar.gz'
 maven_link: 'https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/{{ maven_distr }}'
