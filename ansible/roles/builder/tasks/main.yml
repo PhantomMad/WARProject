@@ -24,6 +24,9 @@
     name: docker
     state: started
 
+- name: "Add community.docker"
+  ansible.builtin.command: 'ansible-galaxy collection install community.docker'
+
 - name: "Set env for maven"
   ansible.builtin.lineinfile:
     path: "/etc/environment"
