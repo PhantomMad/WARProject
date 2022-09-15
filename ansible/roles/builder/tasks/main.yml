@@ -111,3 +111,6 @@
   ansible.builtin.copy:
     src: "{{ dfile_path }}"
     dest: '{{ docker_folder }}'
+
+- name: "Move workspace to project folder"
+  command: ls
