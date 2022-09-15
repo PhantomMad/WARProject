@@ -112,5 +112,9 @@
     src: "{{ dfile_path }}"
     dest: '{{ docker_folder }}'
 
-- name: "Move workspace to project folder"
-  command: ls
+- name: "Pull an image from dockerhub"
+  community.docker.docker_image:
+    name: 'alpine/latest'
+    source: pull
+    pull:
+      platform: 'amd64'
