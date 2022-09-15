@@ -36,11 +36,32 @@ pipeline {
                 sh 'echo "yes" | terraform apply'
             }
         }
-        stage('Get IP'){
+        stage('GetSet IP '){
             steps {
                 script {
-                    vmextip = sh(script:'terraform output external_ip_address', returnStdout:true)
+                    def VMEXTIP = sh(script:'terraform output external_ip_address', returnStdout:true)
+                    def HCONFIG = "[WORKER]\n" + VMEXTIP
+                    writeFile(file: 'ansible/hosts.cfg', text: HCONFIG)
                 }
+                sh 'sed -e \'s/"//\' -e \'s/"$//\' -i ansible/hosts.cfg'
+
+            }
+        }
+        stage('Apply paybook'){
+           input {
+		       message "Confirm yandex cloud node succefully run"
+			   ok "Go!"
+		   }
+		   steps {
+              dir("ansible"){
+                  ansiblePlaybook (become: true,
+                                   colorized: true,
+                                   credentialsId: 'Jenkins_slaves',
+                                   disableHostKeyChecking: true,
+                                   installation: 'IaC',
+                                   inventory: 'hosts.cfg',
+                                   playbook: 'wproject.yml')
+              }
             }
         }
         stage('Clear TF'){

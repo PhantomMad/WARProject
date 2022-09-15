@@ -1,0 +1,23 @@
+---
+# vars file for builder
+# Maven path
+maven_env:
+      - key: 'M2_HOME'
+        value: '/opt/maven'
+      - key: 'MAVEN_HOME'
+        value: '/opt/maven'
+      - key: 'PATH'
+        value: '"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:${M2_HOME}/bin"'
+
+maven_distr: 'apache-maven-3.8.6-bin.tar.gz'
+maven_link: 'https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/{{ maven_distr }}'
+maven_sha: 'sha512:f790857f3b1f90ae8d16281f902c689e4f136ebe584aba45e4b1fa66c80cba826d3e0e52fdd04ed44b4c66f6d3fe3584a057c26dfcac544a60b301e6d0f91c26'
+maven_folder: '/opt/maven'
+maven_archive_folder: '/opt/mvnarchive'
+maven_archive_distr: '{{ maven_archive_folder }}/{{ maven_distr }}'
+mvn: '/opt/maven/bin/mvn'
+
+# Github path
+git_clone_url: 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
+git_clone_tmp: '/tmp/git'
+git_maven_target: '{{ git_clone_tmp }}/target'

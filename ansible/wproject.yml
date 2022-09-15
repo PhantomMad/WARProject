@@ -1,0 +1,6 @@
+---
+- name: "Install build and deploy"
+  hosts: WORKER
+  roles:
+    - builder
+

@@ -1,0 +1,74 @@
+---
+# tasks file for builder
+- name: "Update cache"
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: "Ensure install git"
+  ansible.builtin.apt:
+    name: 'git'
+    state: present
+
+- name: Install Java VM
+  ansible.builtin.apt:
+    name: default-jdk
+    state: latest
+
+- name: Set env for maven
+  ansible.builtin.lineinfile:
+    path: "/etc/environment"
+    state: present
+    regexp: "^{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+  with_items: "{{ maven_env }}"
+
+- name: Create directory for maven
+  ansible.builtin.file:
+    path: "{{ maven_folder }}"
+    state: directory
+    mode: '0755'
+
+- name: Create directory for maven archive
+  ansible.builtin.file:
+    path: "{{ maven_archive_folder }}"
+    state: directory
+    mode: '0755'
+
+- name: Download required maven
+  ansible.builtin.get_url:
+    url: "{{ maven_link }}"
+    dest: "{{ maven_archive_folder }}"
+    checksum: "{{ maven_sha }}"
+
+- name: Unpack maven archive
+  ansible.builtin.unarchive:
+    src: "{{ maven_archive_distr }}"
+    dest: "{{ maven_folder }}"
+    remote_src: yes
+    extra_opts:
+      - --strip-components=1
+
+- name: Create link maven to bin
+  ansible.builtin.file:
+    src: "{{ mvn }}"
+    dest: '/bin/mvn'
+    state: link
+
+- name: Create directory for gitclone
+  ansible.builtin.file:
+    path: "{{ git_clone_tmp }}"
+    state: directory
+    mode: '0755'
+
+- name: Clone github repository
+  ansible.builtin.git:
+    repo: "{{ git_clone_url }}"
+    dest: "{{ git_clone_tmp }}"
+    clone: yes
+    update: no
+
+- name: Build java project
+  command: 'mvn package'
+  args:
+    chdir: "{{ git_clone_tmp }}"
+
