@@ -115,7 +115,7 @@
 
 - name: "Pull an image from dockerhub"
   community.docker.docker_image:
-    name: 'alpine/latest'
+    name: 'alpine'
     source: pull
     pull:
       platform: 'amd64'
