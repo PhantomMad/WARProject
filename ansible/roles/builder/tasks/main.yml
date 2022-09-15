@@ -107,6 +107,11 @@
     src: "{{ dfile_path }}"
     dest: '{{ docker_folder }}'
 
+- name: "Copy startfile to remote destination"
+  ansible.builtin.copy:
+    src: "{{ start_file }}"
+    dest: '{{ docker_folder }}'
+
 - name: "Get war files from build folder"
   ansible.builtin.find:
     path: "{{ git_maven_target }}"

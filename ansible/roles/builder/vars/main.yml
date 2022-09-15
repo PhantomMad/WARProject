@@ -30,5 +30,6 @@ git_maven_target: '{{ git_clone_tmp }}/target'
 #Docker path
 docker_folder: '/var/lib/docker/project'
 dfile_path: '/var/lib/jenkins/workspace/WARProject/Dockerfile'
+start_file: '/var/lib/jenkins/workspace/WARProject/start.sh'
 rem_dpath: '/vat/lib/docker/project'
 dcr_javaf_tomcat: '{{ rem_dpath }}/webapps'
