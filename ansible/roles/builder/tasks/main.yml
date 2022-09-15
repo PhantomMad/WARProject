@@ -101,7 +101,7 @@
   register: build_files
 
 - name: "Copy war|jar files to docker folder"
-  ansible.builin.copy:
+  ansible.builtin.copy:
     src: '{{ item.path }}'
     dst: '{{ docker_folder }}'
     remote_src: yes
