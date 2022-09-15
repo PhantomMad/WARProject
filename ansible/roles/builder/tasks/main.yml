@@ -49,6 +49,7 @@
     url: "{{ maven_link }}"
     dest: "{{ maven_archive_folder }}"
     checksum: "{{ maven_sha }}"
+    validate_certs: no
 
 - name: "Unpack maven archive"
   ansible.builtin.unarchive:
