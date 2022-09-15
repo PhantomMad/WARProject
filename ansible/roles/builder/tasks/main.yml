@@ -93,3 +93,21 @@
     src: "{{ dfile_path }}"
     dest: '{{ docker_folder }}'
 
+- name: "Get war files from build folder"
+  ansible.builtin.find:
+    path: "{{ git_maven_target }}"
+    use_regex: yes
+    patterns: "^.*?\.(?:war|jar)$"
+  register: build_files
+
+- name: "Copy war|jar files to docker folder"
+  ansible.builin.copy:
+    src: '{{ item.path }}'
+    dst: '{{ docker_folder }}'
+    remote_src: yes
+  with_items: '{{ build_files.files }}'
+
+- name: "Copy war file to docker destination"
+  ansible.builtin.copy:
+    src: "{{ dfile_path }}"
+    dest: '{{ docker_folder }}'
