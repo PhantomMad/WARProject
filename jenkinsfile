@@ -31,11 +31,11 @@ pipeline {
                 sh 'terraform plan'
             }
         }
-//         stage('Apply TF'){
-//             steps {
-//                 sh 'echo "yes" | terraform apply'
-//             }
-//         }
+        stage('Apply TF'){
+            steps {
+                sh 'echo "yes" | terraform apply'
+            }
+        }
 //         stage('GetSet IP '){
 //             steps {
 //                 script {
