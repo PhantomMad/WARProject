@@ -108,10 +108,10 @@ pipeline {
 //               }
 //             }
 //         }
-        stage('Clear TF'){
-          steps {
-              sh 'find /var/lib/jenkins/workspace/WARProject -mindepth 1 -delete'
-          }
-        }
+//         stage('Clear TF'){
+//           steps {
+//               sh 'find /var/lib/jenkins/workspace/WARProject -mindepth 1 -delete'
+//           }
+//         }
     }
 }
