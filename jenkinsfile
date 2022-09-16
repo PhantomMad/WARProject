@@ -63,22 +63,31 @@ pipeline {
                 }
             }
         }
-//         stage('Apply TF'){
-//             steps {
-//                 sh 'echo "yes" | terraform apply'
-//             }
-//         }
-//         stage('GetSet IP '){
-//             steps {
-//                 script {
-//                     def VMEXTIP = sh(script:'terraform output external_ip_address', returnStdout:true)
-//                     def HCONFIG = "[WORKER]\n" + VMEXTIP
-//                     writeFile(file: 'ansible/hosts.cfg', text: HCONFIG)
-//                 }
-//                 sh 'sed -e \'s/"//\' -e \'s/"$//\' -i ansible/hosts.cfg'
-//
-//             }
-//         }
+        stage('Apply TF build'){
+            steps {
+                sh 'echo "yes" | terraform apply'
+            }
+        }
+        stage('Apply TF prod'){
+            steps {
+                dir("prod") {
+                    sh 'echo "yes" | terraform apply'
+                }
+            }
+        }
+        stage('GetSet IP '){
+            steps {
+                script {
+                    def VMBEXTIP = sh(script:'terraform output extbuild_ip_address', returnStdout:true)
+                    def VMPEXTIP = sh(script:'terraform output extprod_ip_address', returnStdout:true)
+                    def BHCONFIG = "[WORKER]\n" + VMBEXTIP + "\n"
+                    def HCONFIG = BHCONFIG + "[PRODUCT]\n" + VMPEXTIP
+                    writeFile(file: 'ansible/hosts.cfg', text: HCONFIG)
+                }
+                sh 'sed -e \'s/"//\' -e \'s/"$//\' -i ansible/hosts.cfg'
+
+            }
+        }
 //         stage('Apply paybook'){
 //            input {
 // 		       message "Confirm yandex cloud node succefully run"
