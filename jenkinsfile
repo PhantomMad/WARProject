@@ -9,6 +9,7 @@ pipeline {
                 sh 'cp /home/jenkins/users.txt .'
                 sh 'cp /home/jenkins/main.tf .'
                 sh 'cp /home/jenkins/.passwd-s3fs .'
+                sh 'mkdir ./bucket'
                 sh 'cp /home/jenkins/main.tf ./bucket'
                 sh 'cp /home/jenkins/bucket.tf ./bucket'
                 sh 'cp /home/jenkins/users.txt ./prod'
