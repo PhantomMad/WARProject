@@ -14,9 +14,16 @@ pipeline {
                 sh 'cp /home/jenkins/.terraformrc /var/lib/jenkins'
              }
         }
-        stage('Init TF provider'){
+        stage('Init TF build provider'){
             steps {
                 sh 'terraform init'
+            }
+        }
+        stage('Init TF prod provider'){
+            dir ("prod") {
+                steps {
+                    sh 'terraform init'
+                }
             }
         }
         stage('Validate TF config'){
