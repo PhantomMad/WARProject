@@ -78,8 +78,11 @@ pipeline {
         stage('GetSet IP '){
             steps {
                 script {
+                    def VMPEXTIP = ""
                     def VMBEXTIP = sh(script:'terraform output extbuild_ip_address', returnStdout:true)
-                    def VMPEXTIP = sh(script:'terraform output extprod_ip_address', returnStdout:true)
+                    dir ("prod") {
+                        VMPEXTIP = sh(script:'terraform output extprod_ip_address', returnStdout:true)
+                    }
                     def BHCONFIG = "[WORKER]\n" + VMBEXTIP + "\n"
                     def HCONFIG = BHCONFIG + "[PRODUCT]\n" + VMPEXTIP
                     writeFile(file: 'ansible/hosts.cfg', text: HCONFIG)
