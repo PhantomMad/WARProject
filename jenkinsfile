@@ -8,45 +8,157 @@ pipeline {
             steps {
                 sh 'cp /home/jenkins/users.txt .'
                 sh 'cp /home/jenkins/main.tf .'
+                sh 'cp /home/jenkins/.passwd-s3fs .'
+                sh 'mkdir ./bucket'
+                sh 'cp /home/jenkins/main.tf ./bucket'
+                sh 'cp /home/jenkins/bucket.tf ./bucket'
+                sh 'cp /home/jenkins/users.txt ./prod'
+                sh 'cp /home/jenkins/main.tf ./prod'
                 sh 'cp /home/jenkins/.terraformrc /var/lib/jenkins'
+             }
+        }
+        stage('Init TF bucket provider'){
+            steps {
+                dir ("bucket") {
+                    sh 'terraform init'
+                }
             }
         }
-        stage('Init TF provider'){
+        stage('Validate TF bucket config'){
+            steps {
+                dir ("bucket") {
+                    sh 'terraform validate'
+                }
+            }
+        }
+        stage('Format TF bucket config'){
+            steps {
+                dir ("bucket") {
+                    sh 'terraform fmt'
+                }
+            }
+        }
+        stage('Plan TF bucket'){
+            steps {
+                dir ("bucket") {
+                    sh 'terraform plan'
+                }
+            }
+        }
+        stage('Init TF build provider'){
             steps {
                 sh 'terraform init'
             }
         }
-        stage('Validate TF config'){
+        stage('Validate TF build config'){
             steps {
                 sh 'terraform validate'
             }
         }
-        stage('Format TF config'){
+        stage('Format TF build config'){
             steps {
                 sh 'terraform fmt'
             }
         }
-        stage('Plan TF'){
+        stage('Plan TF build'){
             steps {
                 sh 'terraform plan'
             }
         }
-        stage('Apply TF'){
+        stage('Init TF prod provider'){
+            steps {
+                dir ("prod") {
+                    sh 'terraform init'
+                }
+            }
+        }
+        stage('Validate TF prod config'){
+            steps {
+                dir ("prod") {
+                    sh 'terraform validate'
+                }
+            }
+        }
+        stage('Format TF prod config'){
+            steps {
+                dir ("prod") {
+                    sh 'terraform fmt'
+                }
+            }
+        }
+        stage('Plan TF prod'){
+            steps {
+                dir ("prod") {
+                    sh 'terraform plan'
+                }
+            }
+        }
+        stage('Apply TF bucket'){
+            steps {
+                dir("bucket") {
+                    sh 'echo "yes" | terraform apply'
+                }
+            }
+        }
+        stage('Apply TF build'){
             steps {
                 sh 'echo "yes" | terraform apply'
             }
         }
-        stage('Get IP'){
+        stage('Apply TF prod'){
+            steps {
+                dir("prod") {
+                    sh 'echo "yes" | terraform apply'
+                }
+            }
+        }
+        stage('GetSet IP '){
             steps {
                 script {
-                    vmextip = sh(script:'terraform output external_ip_address', returnStdout:true)
+                    def VMPEXTIP = ""
+                    def VMBEXTIP = sh(script:'terraform output extbuild_ip_address', returnStdout:true)
+                    dir ("prod") {
+                        VMPEXTIP = sh(script:'terraform output extprod_ip_address', returnStdout:true)
+                    }
+                    def BHCONFIG = "[WORKER]\n" + VMBEXTIP + "\n"
+                    def HCONFIG = BHCONFIG + "[PRODUCT]\n" + VMPEXTIP
+                    writeFile(file: 'ansible/hosts.cfg', text: HCONFIG)
                 }
+                sh 'sed -e \'s/"//\' -e \'s/"$//\' -i ansible/hosts.cfg'
+
+            }
+        }
+        stage('Apply paybook'){
+           input {
+		       message "Confirm yandex cloud node succefully run"
+			   ok "Go!"
+		   }
+		   steps {
+              dir("ansible"){
+                  ansiblePlaybook (become: true,
+                                   colorized: true,
+                                   credentialsId: 'Jenkins_slaves',
+                                   disableHostKeyChecking: true,
+                                   installation: 'IaC',
+                                   inventory: 'hosts.cfg',
+                                   playbook: 'wproject.yml')
+              }
+            }
+        }
+        stage('Destroy TF bucket'){
+            steps {
+                dir("bucket") {
+                    sh 'echo "yes" | terraform destroy'
+                }
+            }
+        }
+        stage('Destroy TF build'){
+            steps {
+                sh 'echo "yes" | terraform destroy'
             }
         }
         stage('Clear TF'){
           steps {
-              sh 'rm -f /var/lib/jenkins/.terraformrc'
-              sh 'rm -rf /var/lib/jenkins/.terraform.d '
               sh 'find /var/lib/jenkins/workspace/WARProject -mindepth 1 -delete'
           }
         }

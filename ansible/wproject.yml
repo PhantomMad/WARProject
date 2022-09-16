@@ -1,0 +1,12 @@
+---
+- name: "Install build and deploy"
+  hosts: WORKER
+  roles:
+    - builder
+
+- name: "Install prod and run"
+  hosts: PRODUCT
+  roles:
+    - product
+
+

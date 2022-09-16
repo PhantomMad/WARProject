@@ -1,10 +1,10 @@
-resource "yandex_compute_instance" "VMB" {
-  name = "buildmashine"
-  hostname = "buildvm"
+resource "yandex_compute_instance" "VMP" {
+  name = "prodmashine"
+  hostname = "prodvm"
 
   resources {
-    cores  = 4
-    memory = 4
+    cores  = 2
+    memory = 2
   }
   boot_disk {
     initialize_params {
@@ -20,6 +20,6 @@ resource "yandex_compute_instance" "VMB" {
     preemptible = true
   }
   metadata = {
-    user-data = "${file("~/workspace/WARProject/users.txt")}"
+    user-data = "${file("~/workspace/WARProject/prod/users.txt")}"
   }
 }

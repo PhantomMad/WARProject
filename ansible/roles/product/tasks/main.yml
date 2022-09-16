@@ -1,0 +1,115 @@
+---
+# tasks file for product
+
+- name: "Update cache"
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: "Ensure install Docker"
+  ansible.builtin.apt:
+    name: docker.io
+    state: latest
+
+- name: "Ensure started Docker"
+  ansible.builtin.service:
+    name: docker
+    state: started
+
+- name: "Ensure install s3fs"
+  ansible.builtin.apt:
+    name: s3fs
+    state: latest
+
+- name: "Create directory for yandex bucket"
+  ansible.builtin.file:
+    path: "{{ bucket_folder }}"
+    state: directory
+    mode: '0755'
+
+- name: "Create folder for docker work images"
+  ansible.builtin.file:
+    path: '{{ docker_folder }}'
+    state: directory
+    mode: '0755'
+
+- name: "Download required tomcat"
+  ansible.builtin.get_url:
+    url: "{{ tomcat_link }}"
+    dest: "{{ docker_folder }}"
+    checksum: "{{ tomcat_sha }}"
+    validate_certs: no
+
+- name: "Send s3fs file to prod"
+  ansible.builtin.copy:
+    src: '{{ s3fs_file }}'
+    dest: '{{ tmp_path }}'
+
+- name: "Change permission on s3fs file"
+  ansible.builtin.file:
+    path: '{{ s3fs_rem }}'
+    mode: '600'
+
+- name: "Get yandex bucket resource"
+  command: 's3fs devopsdb /tmp/mnt -o passwd_file=/tmp/.passwd-s3fs -o url=http://storage.yandexcloud.net -o use_path_request_style'
+
+- name: "Get war files from bucket"
+  ansible.builtin.find:
+    path: "{{ bucket_folder }}"
+    use_regex: yes
+    patterns: "^.*?\\.(?:war|jar)$"
+  register: build_files
+
+- name: "Create folder for docker tomcat files"
+  ansible.builtin.file:
+    path: '{{ dcr_javaf_tomcat }}'
+    state: directory
+    mode: '0755'
+
+- name: "Copy war|jar files to docker tomcat work folder"
+  ansible.builtin.copy:
+    src: '{{ item.path }}'
+    dest: '{{ dcr_javaf_tomcat }}'
+    remote_src: yes
+  with_items: '{{ build_files.files }}'
+
+- name: "Copy Dockerfile to remote destination"
+  ansible.builtin.copy:
+    src: "{{ dfile_path }}"
+    dest: '{{ docker_folder }}'
+
+- name: "Copy startfile to remote destination"
+  ansible.builtin.copy:
+    src: "{{ start_file }}"
+    dest: '{{ docker_folder }}'
+
+- name: "Pull an image from dockerhub"
+  community.docker.docker_image:
+    name: 'alpine'
+    source: pull
+    pull:
+      platform: 'amd64'
+
+- name: "Build our project image"
+  community.docker.docker_image:
+    name: 'tomcat:local'
+    build:
+      path: '{{ docker_folder }}'
+    source: build
+
+- name: "Create a www container"
+  community.docker.docker_container:
+    name: 'www_tomcat'
+    image: 'tomcat:local'
+    state: 'started'
+    restart: false
+    published_ports:
+      - '8080:8080'
+
+- name: "Remove file from bucket"
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: absent
+  with_items: '{{ build_files.files }}'
+
+- name: "Unset yandex bucket resource"
+  command: 'umount /tmp/mnt'

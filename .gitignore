@@ -163,3 +163,5 @@ logs/
 # Terraform secrets
 main.tf
 users.txt
+.passwd-s3fs
+bucket/
