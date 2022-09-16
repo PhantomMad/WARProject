@@ -16,7 +16,7 @@
 
 - name: "Ensure install s3fs"
   ansible.builtin.apt:
-    name: s3fs-fuse
+    name: s3fs
     state: latest
 
 - name: "Create directory for yandex bucket"
