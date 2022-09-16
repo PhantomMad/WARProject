@@ -105,5 +105,11 @@
     published_ports:
       - '8080:8080'
 
+- name: "Remove file from bucket"
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: absent
+  with_items: '{{ build_files.files }}'
+
 - name: "Unset yandex bucket resource"
   command: 'umount /tmp/mnt'

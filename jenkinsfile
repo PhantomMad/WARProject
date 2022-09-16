@@ -145,18 +145,18 @@ pipeline {
               }
             }
         }
-//         stage('Destroy TF bucket'){
-//             steps {
-//                 dir("bucket") {
-//                     sh 'echo "yes" | terraform destroy'
-//                 }
-//             }
-//         }
-//         stage('Destroy TF build'){
-//             steps {
-//                 sh 'echo "yes" | terraform destroy'
-//             }
-//         }
+        stage('Destroy TF bucket'){
+            steps {
+                dir("bucket") {
+                    sh 'echo "yes" | terraform destroy'
+                }
+            }
+        }
+        stage('Destroy TF build'){
+            steps {
+                sh 'echo "yes" | terraform destroy'
+            }
+        }
         stage('Clear TF'){
           steps {
               sh 'find /var/lib/jenkins/workspace/WARProject -mindepth 1 -delete'
