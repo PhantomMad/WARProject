@@ -6,6 +6,7 @@ pipeline {
     stages {
         stage('Copy sec TFiles') {
             steps {
+                sh 'cp /home/jenkins/bucket.tf .'
                 sh 'cp /home/jenkins/users.txt .'
                 sh 'cp /home/jenkins/main.tf .'
                 sh 'cp /home/jenkins/.passwd-s3fs .'
