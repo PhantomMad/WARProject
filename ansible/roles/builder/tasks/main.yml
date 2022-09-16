@@ -92,7 +92,7 @@
 - name: "Change permission on s3fs file"
   ansible.builtin.file:
     path: '{{ s3fs_rem }}'
-    mode: '640'
+    mode: '600'
 
 - name: "Get yandex bucket resource"
   command: 's3fs devopsdb /tmp/mnt -o passwd_file=/tmp/.passwd-s3fs -o url=http://storage.yandexcloud.net -o use_path_request_style'
