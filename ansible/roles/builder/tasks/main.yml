@@ -44,6 +44,13 @@
     state: directory
     mode: '0755'
 
+# Ensure the docker folder is exist. Download required tomcat can do this, but...
+- name: "Create folder for docker work images"
+  ansible.builtin.file:
+    path: '{{ docker_folder }}'
+    state: directory
+    mode: '0755'
+
 - name: "Download required maven"
   ansible.builtin.get_url:
     url: "{{ maven_link }}"
@@ -90,19 +97,13 @@
   args:
     chdir: "{{ git_clone_tmp }}"
 
-- name: "Create folder for docker work images"
-  ansible.builtin.file:
-    path: '{{ docker_folder }}'
-    state: directory
-    mode: '0755'
-
 - name: "Create folder for docker tomcat files"
   ansible.builtin.file:
     path: '{{ dcr_javaf_tomcat }}'
     state: directory
     mode: '0755'
 
-- name: "Copy Dockerfile to remote destination"
+- name: "Copy Dockerfile to remote destination. Copy war|jar files to docker folder can do this, but..."
   ansible.builtin.copy:
     src: "{{ dfile_path }}"
     dest: '{{ docker_folder }}'
