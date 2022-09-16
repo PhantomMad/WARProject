@@ -1,6 +1,5 @@
 ---
 # vars file for product
-
 #Docker path
 docker_folder: '/var/lib/docker/project'
 dfile_path: '/var/lib/jenkins/workspace/WARProject/Dockerfile'

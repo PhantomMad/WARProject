@@ -22,3 +22,7 @@ git_clone_url: 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
 git_clone_tmp: '/tmp/git'
 git_maven_target: '{{ git_clone_tmp }}/target'
 
+# Yandex cloud path
+s3fs_file: '/var/lib/jenkins/workspace/WARProject/.passwd-s3fs'
+bucket_folder: '/tmp/mnt'
+tmp_path: '/tmp'

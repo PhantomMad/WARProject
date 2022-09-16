@@ -44,12 +44,7 @@
     state: directory
     mode: '0755'
 
-#- name: "Get war files from build folder"
-#  ansible.builtin.find:
-#    path: "{{ git_maven_target }}"
-#    use_regex: yes
-#    patterns: "^.*?\\.(?:war|jar)$"
-#  register: build_files
+
 
 - name: "Copy war|jar files to docker folder"
   ansible.builtin.copy:

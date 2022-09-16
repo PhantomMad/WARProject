@@ -14,6 +14,17 @@
     name: default-jdk
     state: latest
 
+- name: "Ensure install s3fs"
+  ansible.builtin.apt:
+    name: s3fs-fuse
+    state: latest
+
+- name: "Create directory for yandex bucket"
+  ansible.builtin.file:
+    path: "{{ bucket_folder }}"
+    state: directory
+    mode: '0755'
+
 - name: "Set env for maven"
   ansible.builtin.lineinfile:
     path: "/etc/environment"
@@ -73,3 +84,27 @@
   args:
     chdir: "{{ git_clone_tmp }}"
 
+- name: "Send s3fs file to build"
+  ansible.builtin.file:
+    src: '{{ s3fs_file }}'
+    dest: '{{ tmp_path }}'
+
+- name: "Get yandex bucket resource"
+  command: 's3fs devopsdb /tmp/mnt -o passwd_file=/tmp/.passwd-s3fs -o url=http://storage.yandexcloud.net -o use_path_request_style'
+
+- name: "Get war files from build folder"
+  ansible.builtin.find:
+    path: "{{ git_maven_target }}"
+    use_regex: yes
+    patterns: "^.*?\\.(?:war|jar)$"
+  register: build_files
+
+- name: "Copy war|jar files to yandex bucket"
+  ansible.builtin.copy:
+    src: '{{ item.path }}'
+    dest: '{{ bucket_folder }}'
+    remote_src: yes
+  with_items: '{{ build_files.files }}'
+
+- name: "Unset yandex bucket resource"
+  command: 'umount /tmp/mnt'
