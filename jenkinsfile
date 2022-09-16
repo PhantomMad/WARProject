@@ -101,11 +101,11 @@ pipeline {
                 }
             }
         }
-//         stage('Apply TF build'){
-//             steps {
-//                 sh 'echo "yes" | terraform apply'
-//             }
-//         }
+        stage('Apply TF build'){
+            steps {
+                sh 'echo "yes" | terraform apply'
+            }
+        }
 //         stage('Apply TF prod'){
 //             steps {
 //                 dir("prod") {
@@ -113,43 +113,55 @@ pipeline {
 //                 }
 //             }
 //         }
-//         stage('GetSet IP '){
-//             steps {
-//                 script {
-//                     def VMPEXTIP = ""
-//                     def VMBEXTIP = sh(script:'terraform output extbuild_ip_address', returnStdout:true)
-//                     dir ("prod") {
-//                         VMPEXTIP = sh(script:'terraform output extprod_ip_address', returnStdout:true)
-//                     }
-//                     def BHCONFIG = "[WORKER]\n" + VMBEXTIP + "\n"
-//                     def HCONFIG = BHCONFIG + "[PRODUCT]\n" + VMPEXTIP
-//                     writeFile(file: 'ansible/hosts.cfg', text: HCONFIG)
-//                 }
-//                 sh 'sed -e \'s/"//\' -e \'s/"$//\' -i ansible/hosts.cfg'
-//
-//             }
-//         }
-//         stage('Apply paybook'){
-//            input {
-// 		       message "Confirm yandex cloud node succefully run"
-// 			   ok "Go!"
-// 		   }
-// 		   steps {
-//               dir("ansible"){
-//                   ansiblePlaybook (become: true,
-//                                    colorized: true,
-//                                    credentialsId: 'Jenkins_slaves',
-//                                    disableHostKeyChecking: true,
-//                                    installation: 'IaC',
-//                                    inventory: 'hosts.cfg',
-//                                    playbook: 'wproject.yml')
-//               }
-//             }
-//         }
-//         stage('Clear TF'){
-//           steps {
-//               sh 'find /var/lib/jenkins/workspace/WARProject -mindepth 1 -delete'
-//           }
-//         }
+        stage('GetSet IP '){
+            steps {
+                script {
+                    def VMPEXTIP = ""
+                    def VMBEXTIP = sh(script:'terraform output extbuild_ip_address', returnStdout:true)
+                    dir ("prod") {
+                        VMPEXTIP = sh(script:'terraform output extprod_ip_address', returnStdout:true)
+                    }
+                    def BHCONFIG = "[WORKER]\n" + VMBEXTIP + "\n"
+                    def HCONFIG = BHCONFIG + "[PRODUCT]\n" + VMPEXTIP
+                    writeFile(file: 'ansible/hosts.cfg', text: HCONFIG)
+                }
+                sh 'sed -e \'s/"//\' -e \'s/"$//\' -i ansible/hosts.cfg'
+
+            }
+        }
+        stage('Apply paybook'){
+           input {
+		       message "Confirm yandex cloud node succefully run"
+			   ok "Go!"
+		   }
+		   steps {
+              dir("ansible"){
+                  ansiblePlaybook (become: true,
+                                   colorized: true,
+                                   credentialsId: 'Jenkins_slaves',
+                                   disableHostKeyChecking: true,
+                                   installation: 'IaC',
+                                   inventory: 'hosts.cfg',
+                                   playbook: 'wproject.yml')
+              }
+            }
+        }
+        stage('Destroy TF bucket'){
+            steps {
+                dir("bucket") {
+                    sh 'echo "yes" | terraform destroy'
+                }
+            }
+        }
+        stage('Destroy TF build'){
+            steps {
+                sh 'echo "yes" | terraform destroy'
+            }
+        }
+        stage('Clear TF'){
+          steps {
+              sh 'find /var/lib/jenkins/workspace/WARProject -mindepth 1 -delete'
+          }
+        }
     }
 }
