@@ -66,8 +66,6 @@ pipeline {
 //         }
         stage('Clear TF'){
           steps {
-              sh 'rm -f /var/lib/jenkins/.terraformrc'
-              sh 'rm -rf /var/lib/jenkins/.terraform.d '
               sh 'find /var/lib/jenkins/workspace/WARProject -mindepth 1 -delete'
           }
         }
