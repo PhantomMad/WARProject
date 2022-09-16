@@ -20,8 +20,8 @@ pipeline {
             }
         }
         stage('Init TF prod provider'){
-            dir ("prod") {
-                steps {
+            steps {
+                dir ("prod") {
                     sh 'terraform init'
                 }
             }
