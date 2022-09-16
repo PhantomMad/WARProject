@@ -19,6 +19,21 @@ pipeline {
                 sh 'terraform init'
             }
         }
+        stage('Validate TF build config'){
+            steps {
+                sh 'terraform validate'
+            }
+        }
+        stage('Format TF build config'){
+            steps {
+                sh 'terraform fmt'
+            }
+        }
+        stage('Plan TF build'){
+            steps {
+                sh 'terraform plan'
+            }
+        }
         stage('Init TF prod provider'){
             steps {
                 dir ("prod") {
@@ -26,19 +41,25 @@ pipeline {
                 }
             }
         }
-        stage('Validate TF config'){
+        stage('Validate TF prod config'){
             steps {
-                sh 'terraform validate'
+                dir ("prod") {
+                    sh 'terraform validate'
+                }
             }
         }
-        stage('Format TF config'){
+        stage('Format TF prod config'){
             steps {
-                sh 'terraform fmt'
+                dir ("prod") {
+                    sh 'terraform fmt'
+                }
             }
         }
-        stage('Plan TF'){
+        stage('Plan TF prod'){
             steps {
-                sh 'terraform plan'
+                dir ("prod") {
+                    sh 'terraform plan'
+                }
             }
         }
 //         stage('Apply TF'){

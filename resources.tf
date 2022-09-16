@@ -1,5 +1,5 @@
-resource "yandex_compute_instance" "VM" {
-  name = "workmashine"
+resource "yandex_compute_instance" "VMB" {
+  name = "buildmashine"
   hostname = "buildvm"
 
   resources {
