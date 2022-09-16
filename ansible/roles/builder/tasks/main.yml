@@ -85,7 +85,7 @@
     chdir: "{{ git_clone_tmp }}"
 
 - name: "Send s3fs file to build"
-  ansible.builtin.file:
+  ansible.builtin.copy:
     src: '{{ s3fs_file }}'
     dest: '{{ tmp_path }}'
 
