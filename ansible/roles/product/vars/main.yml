@@ -10,3 +10,9 @@ dcr_javaf_tomcat: '{{ docker_folder }}/webapps'
 tomcat_distr: 'apache-tomcat-10.0.23.tar.gz'
 tomcat_link: 'https://dlcdn.apache.org/tomcat/tomcat-10/v10.0.23/bin/{{ tomcat_distr }}'
 tomcat_sha: 'sha512:0e0263e8280f2ccfb4bef916444a6105fef689a3d95c334c8a7bfe59f1e3966d48ea624727f1818a4df331a603f1ac5e21b908dda3cae676ddc1aef90c2d12ab'
+
+# Yandex cloud path
+s3fs_file: '/var/lib/jenkins/workspace/WARProject/.passwd-s3fs'
+bucket_folder: '/tmp/mnt'
+tmp_path: '/tmp'
+s3fs_rem: '{{ tmp_path }}/.passwd-s3fs'

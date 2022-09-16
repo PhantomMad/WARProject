@@ -21,7 +21,47 @@
     state: directory
     mode: '0755'
 
-- name: "Copy Dockerfile to remote destination. Copy war|jar files to docker folder can do this, but..."
+- name: "Download required tomcat"
+  ansible.builtin.get_url:
+    url: "{{ tomcat_link }}"
+    dest: "{{ docker_folder }}"
+    checksum: "{{ tomcat_sha }}"
+    validate_certs: no
+
+- name: "Send s3fs file to prod"
+  ansible.builtin.copy:
+    src: '{{ s3fs_file }}'
+    dest: '{{ tmp_path }}'
+
+- name: "Change permission on s3fs file"
+  ansible.builtin.file:
+    path: '{{ s3fs_rem }}'
+    mode: '600'
+
+- name: "Get yandex bucket resource"
+  command: 's3fs devopsdb /tmp/mnt -o passwd_file=/tmp/.passwd-s3fs -o url=http://storage.yandexcloud.net -o use_path_request_style'
+
+- name: "Get war files from bucket"
+  ansible.builtin.find:
+    path: "{{ bucket_folder }}"
+    use_regex: yes
+    patterns: "^.*?\\.(?:war|jar)$"
+  register: build_files
+
+- name: "Create folder for docker tomcat files"
+  ansible.builtin.file:
+    path: '{{ dcr_javaf_tomcat }}'
+    state: directory
+    mode: '0755'
+
+- name: "Copy war|jar files to docker tomcat work folder"
+  ansible.builtin.copy:
+    src: '{{ item.path }}'
+    dest: '{{ dcr_javaf_tomcat }}'
+    remote_src: yes
+  with_items: '{{ build_files.files }}'
+
+- name: "Copy Dockerfile to remote destination"
   ansible.builtin.copy:
     src: "{{ dfile_path }}"
     dest: '{{ docker_folder }}'
@@ -30,28 +70,6 @@
   ansible.builtin.copy:
     src: "{{ start_file }}"
     dest: '{{ docker_folder }}'
-
-- name: "Download required tomcat"
-  ansible.builtin.get_url:
-    url: "{{ tomcat_link }}"
-    dest: "{{ docker_folder }}"
-    checksum: "{{ tomcat_sha }}"
-    validate_certs: no
-
-- name: "Create folder for docker tomcat files"
-  ansible.builtin.file:
-    path: '{{ dcr_javaf_tomcat }}'
-    state: directory
-    mode: '0755'
-
-
-
-- name: "Copy war|jar files to docker folder"
-  ansible.builtin.copy:
-    src: '{{ item.path }}'
-    dest: '{{ dcr_javaf_tomcat }}'
-    remote_src: yes
-  with_items: '{{ build_files.files }}'
 
 - name: "Pull an image from dockerhub"
   community.docker.docker_image:
