@@ -17,6 +17,34 @@ pipeline {
                 sh 'cp /home/jenkins/.terraformrc /var/lib/jenkins'
              }
         }
+        stage('Init TF bucket provider'){
+            steps {
+                dir ("bucket") {
+                    sh 'terraform init'
+                }
+            }
+        }
+        stage('Validate TF bucket config'){
+            steps {
+                dir ("bucket") {
+                    sh 'terraform validate'
+                }
+            }
+        }
+        stage('Format TF bucket config'){
+            steps {
+                dir ("bucket") {
+                    sh 'terraform fmt'
+                }
+            }
+        }
+        stage('Plan TF bucket'){
+            steps {
+                dir ("bucket") {
+                    sh 'terraform plan'
+                }
+            }
+        }
         stage('Init TF build provider'){
             steps {
                 sh 'terraform init'
@@ -65,34 +93,41 @@ pipeline {
                 }
             }
         }
-        stage('Apply TF build'){
+        stage('Apply TF bucket'){
             steps {
-                sh 'echo "yes" | terraform apply'
-            }
-        }
-        stage('Apply TF prod'){
-            steps {
-                dir("prod") {
+                dir("bucket") {
                     sh 'echo "yes" | terraform apply'
                 }
             }
         }
-        stage('GetSet IP '){
-            steps {
-                script {
-                    def VMPEXTIP = ""
-                    def VMBEXTIP = sh(script:'terraform output extbuild_ip_address', returnStdout:true)
-                    dir ("prod") {
-                        VMPEXTIP = sh(script:'terraform output extprod_ip_address', returnStdout:true)
-                    }
-                    def BHCONFIG = "[WORKER]\n" + VMBEXTIP + "\n"
-                    def HCONFIG = BHCONFIG + "[PRODUCT]\n" + VMPEXTIP
-                    writeFile(file: 'ansible/hosts.cfg', text: HCONFIG)
-                }
-                sh 'sed -e \'s/"//\' -e \'s/"$//\' -i ansible/hosts.cfg'
-
-            }
-        }
+//         stage('Apply TF build'){
+//             steps {
+//                 sh 'echo "yes" | terraform apply'
+//             }
+//         }
+//         stage('Apply TF prod'){
+//             steps {
+//                 dir("prod") {
+//                     sh 'echo "yes" | terraform apply'
+//                 }
+//             }
+//         }
+//         stage('GetSet IP '){
+//             steps {
+//                 script {
+//                     def VMPEXTIP = ""
+//                     def VMBEXTIP = sh(script:'terraform output extbuild_ip_address', returnStdout:true)
+//                     dir ("prod") {
+//                         VMPEXTIP = sh(script:'terraform output extprod_ip_address', returnStdout:true)
+//                     }
+//                     def BHCONFIG = "[WORKER]\n" + VMBEXTIP + "\n"
+//                     def HCONFIG = BHCONFIG + "[PRODUCT]\n" + VMPEXTIP
+//                     writeFile(file: 'ansible/hosts.cfg', text: HCONFIG)
+//                 }
+//                 sh 'sed -e \'s/"//\' -e \'s/"$//\' -i ansible/hosts.cfg'
+//
+//             }
+//         }
 //         stage('Apply paybook'){
 //            input {
 // 		       message "Confirm yandex cloud node succefully run"
