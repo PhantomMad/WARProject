@@ -3,9 +3,10 @@
   hosts: WORKER
   roles:
     - builder
-#- name: "Install prod and run"
-#  hosts: PRODUCT
-#  roles:
-#    - product
+
+- name: "Install prod and run"
+  hosts: PRODUCT
+  roles:
+    - product
 
 
