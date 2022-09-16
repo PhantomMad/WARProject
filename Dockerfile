@@ -12,7 +12,7 @@ RUN export JAVA_HOME=$(readlink -f /usr/bin/java | sed 's:/bin/java::')
 ENV JRE_HOME=${JAVA_HOME}
 ENV PATH=$PATH:$JAVA_HOME/bin
 ENV CATALINA_PID=/opt/tomcat/temp/tomcat.pid
-ENV CATALINA_OPTS="-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+ENV CATALINA_OPTS="-Djava.net.preferIPv4Stack=true -Xms512M -Xmx1024M -server -XX:+UseParallelGC"
 COPY start.sh .
 EXPOSE 8080
 RUN ["chmod", "+x", "./start.sh"]
