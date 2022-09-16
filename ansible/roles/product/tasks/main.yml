@@ -15,6 +15,17 @@
     name: docker
     state: started
 
+- name: "Ensure install s3fs"
+  ansible.builtin.apt:
+    name: s3fs
+    state: latest
+
+- name: "Create directory for yandex bucket"
+  ansible.builtin.file:
+    path: "{{ bucket_folder }}"
+    state: directory
+    mode: '0755'
+
 - name: "Create folder for docker work images"
   ansible.builtin.file:
     path: '{{ docker_folder }}'
@@ -84,3 +95,15 @@
     build:
       path: '{{ docker_folder }}'
     source: build
+
+- name: "Create a www container"
+  community.docker.docker_container:
+    name: 'www_tomcat'
+    image: 'tomcat:local'
+    state: 'started'
+    restart: false
+    published_ports:
+      - '8080:8080'
+
+- name: "Unset yandex bucket resource"
+  command: 'umount /tmp/mnt'
